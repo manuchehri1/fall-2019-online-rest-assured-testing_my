@@ -27,84 +27,59 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.hamcrest.Matchers.*;
 import static io.restassured.RestAssured.baseURI;
 import org.junit.jupiter.api.Test;
-
-public class BasicAuthentication {
-    @BeforeAll
-    public static void setup(){
-
-
-    }
+public class BasicAuthentication_Vasil {
 
     @Test
     public void spartanAuthentication(){
+        //in the given part, we provide request specifications
+        baseURI = ConfigurationReader.getProperty("SPARTAN.URI");
 
-
-        //in the given part, we provide request specification
         given().
-                auth().basic("admin","admin").
-        when().
+                auth().basic("user", "user").
+                when().
                 get("/spartans").prettyPeek().
-        then().
+                then().
                 statusCode(200);
     }
-
 
     @Test
     public void authorizationTest(){
         baseURI = ConfigurationReader.getProperty("SPARTAN.URI");
-        Spartan spartan = new Spartan("Karim","Male",1233211231);
-
+        Spartan spartan = new Spartan("Araz", "Male", 343242342343L);
         given().
-                auth().basic("user","user").
-                and().body(spartan).
-                and().contentType(ContentType.JSON).
-        when().
+                auth().basic("user", "user").
+                body(spartan).
+                contentType(ContentType.JSON).
+                when().
                 post("/spartans").prettyPeek().
-        then().
+                then().
                 statusCode(403);
-        // user - doesn't have right to add, delete or edit users. Only read
-        // 403 - Forbidden access. You log in but u are trying to do smth u are not allowed
-        //Authorization problem - you logged in but cannot do some actions.
+        /**
+         * user - doesn't have wrights to add, delete or edit users. Only read.
+         * admin - has a permission to add new users.
+         * 403 - Forbidden access. You logged in, but you are trying to do something that you are not allowed.
+         * Authentication problem - you didn't login
+         * Authorization problem - you logged in but cannot do some actions.
+         */
     }
-    /**
-     * user - doesn't have wrights to add, delete or edit users. Only read.
-     * admin - has a permission to add new users.
-     * 403 - Forbidden access. You logged in, but you are trying to do something that you are not allowed.
-     * Authentication problem - you didn't login
-     * Authorization problem - you logged in but cannot do some actions.
-     */
 
     @Test
     public void authenticationTest(){
         baseURI = ConfigurationReader.getProperty("SPARTAN.URI");
-
-        given().
-                get("/spartans").prettyPeek().
-        then().
-                statusCode(401);
-
-        //Authentication problem - you didn't login
         //if don't provide credentials, we must get 401 status code
-
+        get("/spartans").prettyPeek().then().statusCode(401);
     }
-
 
     @Test
     public void authenticationTest2(){
-
         baseURI = "http://practice.cybertekschool.com";
 
         given().
-                auth().basic("admin","admin").
-        when().
+                auth().basic("admin", "admin").
+                when().
                 get("/basic_auth").prettyPeek().
-        then().
+                then().
                 statusCode(200).
                 contentType(ContentType.HTML);
-
     }
-
-
-
-
 }
