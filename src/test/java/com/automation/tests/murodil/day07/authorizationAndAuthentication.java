@@ -25,18 +25,21 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.hamcrest.Matchers.*;
 public class authorizationAndAuthentication {
 
-    private String accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI4NiIsImF1ZCI6InN0dWRlbnQtdGVhbS1sZWFkZXIifQ.lEfjcu6RpBfcZ4qWthzZU8uH8fX4FCJFfxBnPNgh4Mo";
+    private String accessToken = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI4NiIsImF1ZCI6InN0dWRlbnQtdGVhbS1sZWFkZXIifQ.lEfjcu6RpBfcZ4qWthzZU8uH8fX4FCJFfxBnPNgh4Mo";
 
     @BeforeAll
     public static void setUp(){
+
         baseURI = "https://cybertek-reservation-api-qa3.herokuapp.com/api";
     }
 
     @Test
     public void getAllCampusesUsing_access_token(){
-     Response response =    given().header("Authorization",accessToken).
+ Response response =    given().
+                            header("Authorization",accessToken).
                             accept(ContentType.JSON).
-                            when().get("/campuses").prettyPeek();
+                        when().get("/campuses").prettyPeek();
+
      String nameOfRoom111 = response.jsonPath().getString("clusters[0].rooms[0].name[0]");
         System.out.println("nameOfRoom111 = " + nameOfRoom111);
      
